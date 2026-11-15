@@ -1,8 +1,18 @@
 // src/services/contactService.js
-import { supabase } from '/src/services/supabase.js'; // Normal anon client
+import { supabase } from './supabase.js';
 
 export const insertContactApi = async (data) => {
   try {
+    if (!supabase) {
+      console.warn('Supabase is not initialized. Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+      return {
+        success: false,
+        error: {
+          message: 'Contact service is temporarily offline. Please contact directly via email.',
+        },
+      };
+    }
+
     const { data: result, error } = await supabase
       .from('contact')
       .insert([data]);
@@ -17,3 +27,4 @@ export const insertContactApi = async (data) => {
     return { success: false, error };
   }
 };
+
